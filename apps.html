@@ -1,0 +1,151 @@
+// ===== Estado / progreso =====
+let totalQuestions = 12;
+let correctAnswers = 0;
+let flashcardsSeen = new Set();
+let totalFlashcards = 30;
+
+// Utilidad
+function $(sel, ctx=document){ return ctx.querySelector(sel); }
+function $all(sel, ctx=document){ return Array.from(ctx.querySelectorAll(sel)); }
+
+// Cargar progreso
+document.addEventListener('DOMContentLoaded', () => {
+  try {
+    const saved = JSON.parse(localStorage.getItem('progresoMetodos'));
+    if (saved) {
+      correctAnswers = saved.correctAnswers || 0;
+      flashcardsSeen = new Set(saved.flashcardsSeen || []);
+    }
+  } catch(e){}
+  attachHandlers();
+  updateProgress(); updateStats(); updateSummary();
+});
+
+// Guardar
+function saveProgress(){
+  try{
+    localStorage.setItem('progresoMetodos', JSON.stringify({
+      correctAnswers,
+      flashcardsSeen: [...flashcardsSeen]
+    }));
+  }catch(e){}
+}
+
+// Conectar eventos SIN inline
+function attachHandlers(){
+  // Flashcards
+  $all('.flashcard').forEach(card=>{
+    card.addEventListener('click', ()=>{
+      const id = card.getAttribute('data-target');
+      const ans = document.getElementById(id);
+      if (!ans) return;
+      ans.classList.toggle('hidden');
+      if (!flashcardsSeen.has(id)){
+        flashcardsSeen.add(id);
+        updateStats(); updateSummary(); saveProgress();
+      }
+    });
+  });
+
+  // Botones verificar
+  $all('.question').forEach(box=>{
+    const btn = box.querySelector('.btn-verify');
+    if(!btn) return;
+    btn.addEventListener('click', ()=>{
+      const qid = box.getAttribute('data-qid');
+      const correct = box.getAttribute('data-ans');
+      const sel = $(input[name="${qid}"]:checked, box);
+      if(!sel){ alert('Elige una opción'); return; }
+      if(sel.value === correct){
+        alert('✅ Correcto');
+        const key = 'answered_'+qid;
+        if(!localStorage.getItem(key)){
+          correctAnswers++;
+          localStorage.setItem(key, '1');
+          updateProgress(); updateSummary(); saveProgress();
+        }
+      }else{
+        alert('❌ Incorrecto, intenta otra vez');
+      }
+    });
+  });
+
+  // Examen
+  const btnStart = $('#btnStartExam');
+  if (btnStart) btnStart.addEventListener('click', startExam);
+}
+
+// UI progreso
+function updateProgress(){
+  const pct = Math.round((correctAnswers/totalQuestions)*100);
+  const bar = document.getElementById('progress-bar');
+  if(bar){ bar.style.width = pct+'%'; bar.textContent = pct+'%'; }
+}
+function updateStats(){
+  const el = document.getElementById('flashStats');
+  if(el){ el.textContent = Flashcards vistas: ${flashcardsSeen.size}/${totalFlashcards}; }
+}
+function updateSummary(){
+  const totalTasks = totalQuestions + totalFlashcards;
+  const done = correctAnswers + flashcardsSeen.size;
+  const pct = Math.round((done/totalTasks)*100);
+  const panel = document.getElementById('summary');
+  if(panel){ panel.style.display = 'block'; }
+  const txt = document.getElementById('summaryText');
+  if(txt){ txt.textContent = Has completado ${pct}% del curso 🎉; }
+}
+
+// ===== Examen aleatorio =====
+const baseQuestions = [
+  {q:"¿Qué mide la productividad?",opts:["La cantidad de productos","El uso eficiente de los recursos","Solo la calidad"],ans:"El uso eficiente de los recursos"},
+  {q:"Ejemplo de 'métodos y equipo' que mejora productividad:",opts:["Automatización de procesos","Reducir número de empleados","Aumentar horas extras"],ans:"Automatización de procesos"},
+  {q:"La productividad marginal refleja:",opts:["Producción adicional por incremento de insumo","Promedio de producción mensual","Suma de factores productivos"],ans:"Producción adicional por incremento de insumo"},
+  {q:"El estudio de tiempos se centra en:",opts:["Diseñar la planta","Determinar el tiempo estándar","Motivar al personal"],ans:"Determinar el tiempo estándar"},
+  {q:"¿Cuántos pasos tiene el enfoque básico del estudio de métodos?",opts:["6","8","10"],ans:"8"},
+  {q:"Un principio de economía de movimientos es:",opts:["Usar ambas manos simultáneamente","Hacer movimientos bruscos","Aumentar repeticiones innecesarias"],ans:"Usar ambas manos simultáneamente"},
+  {q:"¿Qué simboliza una operación en el diagrama sinóptico?",opts:["Verificar calidad","Fase donde el producto se modifica","Esperar producto"],ans:"Fase donde el producto se modifica"},
+  {q:"¿Qué se coloca a la izquierda del símbolo?",opts:["Descripción","Valores de tiempo","Nombre del analista"],ans:"Valores de tiempo"},
+  {q:"Un enfoque del cursograma sinóptico es:",opts:["Propósito de la operación","Salario de trabajadores","Ventas mensuales"],ans:"Propósito de la operación"}
+];
+
+let examList=[], examIndex=0, examScore=0, examTimer=null, examTime=300;
+
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]] } return a; }
+
+function startExam(){
+  examIndex=0; examScore=0; examTime=300;
+  $('#examResult').innerHTML = '';
+  examList = shuffle([...baseQuestions]).map(q=>({q:q.q, opts: shuffle([...q.opts]), ans:q.ans}));
+  showExamQuestion();
+  if(examTimer) clearInterval(examTimer);
+  examTimer = setInterval(tick, 1000);
+}
+function tick(){
+  if(examTime<=0){ finishExam(); return; }
+  const m=Math.floor(examTime/60), s=examTime%60;
+  $('#timer').textContent = Tiempo restante: ${m}:${s<10?'0'+s:s};
+  examTime--;
+}
+function showExamQuestion(){
+  const box = $('#examContent');
+  if(examIndex>=examList.length){ finishExam(); return; }
+  const q = examList[examIndex];
+  let html = <p><strong>${examIndex+1}. ${q.q}</strong></p>;
+  q.opts.forEach(o => { html += <label><input type="radio" name="examOpt" value="${o}"> ${o}</label><br>; });
+  html += <button id="btnSubmitExam">Responder</button>;
+  box.innerHTML = html;
+  $('#btnSubmitExam').addEventListener('click', submitExam);
+}
+function submitExam(){
+  const sel = $('input[name="examOpt"]:checked');
+  if(!sel){ alert('Elige una opción'); return; }
+  if(sel.value===examList[examIndex].ans) examScore++;
+  examIndex++; showExamQuestion();
+}
+function finishExam(){
+  if(examTimer){ clearInterval(examTimer); examTimer=null; }
+  $('#examContent').innerHTML = '';
+  const pct = Math.round((examScore/examList.length)*100);
+  const msg = pct>=70 ? '🎉 Aprobaste' : '❌ No aprobaste';
+  $('#examResult').innerHTML = <h3>Resultado: ${pct}%</h3><p>${msg}</p>;
+}
