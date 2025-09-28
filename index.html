@@ -1,38 +1,38 @@
 <!doctype html>
 <html lang="es">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Ingeniería de Métodos — Interactivo</title>
-<style>
-  :root{--ink:#1f2328;--bg:#f9fafb;--brand:#2563eb;--ok:#10b981;--warn:#dc2626;--card:#fff;--line:#e5e7eb;}
-  *{box-sizing:border-box} body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink)}
-  header{background:#111827;color:#fff;padding:24px 16px;text-align:center}
-  nav{position:sticky;top:0;z-index:5;background:var(--brand);display:flex;flex-wrap:wrap;gap:14px;justify-content:center;padding:10px}
-  nav a{color:#fff;text-decoration:none;font-weight:700;padding:6px 10px;border-radius:6px}
-  nav a:hover{background:rgba(255,255,255,.15)}
-  main{max-width:1000px;margin:auto;padding:20px}
-  section{margin:36px 0} h2{border-bottom:2px solid var(--line);padding-bottom:6px;margin-top:0}
-  .row{display:grid;grid-template-columns:1fr;gap:12px}@media(min-width:800px){.row{grid-template-columns:1fr 1fr}}
-  .flashcard,.question,#exam,.panel{background:var(--card);border:1px solid #ddd;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
-  .flashcard{padding:16px;cursor:pointer}.flashcard p{margin:0}
-  .hidden{display:none}.question{padding:16px}
-  button{padding:8px 14px;border:none;border-radius:8px;background:var(--brand);color:#fff;cursor:pointer;margin-top:10px}
-  button:hover{filter:brightness(.95)}
-  #progress-container{background:var(--line);height:20px;width:100%;border-radius:10px;overflow:hidden;margin:16px 0}
-  #progress-bar{background:var(--ok);height:100%;width:0;text-align:center;color:#fff;font-size:12px;font-weight:700;transition:width .35s}
-  .stats{color:#374151;font-size:14px;margin-bottom:12px}
-  #summary{background:#e0f2fe;border:1px solid #38bdf8;border-radius:10px;padding:16px;margin:28px 0;display:none;text-align:center}
-  #summary h3{margin:0 0 6px;color:#0369a1}
-  #exam{padding:18px;border:2px solid var(--brand)} #timer{font-weight:800;color:var(--warn);margin:10px 0}
-  #jsok{font-size:12px;color:#047857;text-align:center;margin-top:6px}
-</style>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Ingeniería de Métodos — Interactivo</title>
+  <style>
+    :root{--ink:#1f2328;--bg:#f9fafb;--brand:#2563eb;--ok:#10b981;--warn:#dc2626;--card:#fff;--line:#e5e7eb;}
+    *{box-sizing:border-box} body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+    header{background:#111827;color:#fff;padding:24px 16px;text-align:center}
+    nav{position:sticky;top:0;z-index:5;background:var(--brand);display:flex;flex-wrap:wrap;gap:14px;justify-content:center;padding:10px}
+    nav a{color:#fff;text-decoration:none;font-weight:700;padding:6px 10px;border-radius:6px}
+    nav a:hover{background:rgba(255,255,255,.15)}
+    main{max-width:1000px;margin:auto;padding:20px}
+    section{margin:36px 0} h2{border-bottom:2px solid var(--line);padding-bottom:6px;margin-top:0}
+    .row{display:grid;grid-template-columns:1fr;gap:12px}@media(min-width:800px){.row{grid-template-columns:1fr 1fr}}
+    .flashcard,.question,#exam,.panel{background:var(--card);border:1px solid #ddd;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+    .flashcard{padding:16px;cursor:pointer}.flashcard p{margin:0}
+    .hidden{display:none}.question{padding:16px}
+    button{padding:8px 14px;border:none;border-radius:8px;background:var(--brand);color:#fff;cursor:pointer;margin-top:10px}
+    button:hover{filter:brightness(.95)}
+    #progress-container{background:var(--line);height:20px;width:100%;border-radius:10px;overflow:hidden;margin:16px 0}
+    #progress-bar{background:var(--ok);height:100%;width:0;text-align:center;color:#fff;font-size:12px;font-weight:700;transition:width .35s}
+    .stats{color:#374151;font-size:14px;margin-bottom:12px}
+    #summary{background:#e0f2fe;border:1px solid #38bdf8;border-radius:10px;padding:16px;margin:28px 0;display:none;text-align:center}
+    #summary h3{margin:0 0 6px;color:#0369a1}
+    #exam{padding:18px;border:2px solid var(--brand)} #timer{font-weight:800;color:var(--warn);margin:10px 0}
+  </style>
+  <!-- MUY IMPORTANTE: JS externo (GitHub Pages bloquea inline JS) -->
+  <script src="app.js" defer></script>
 </head>
 <body>
 <header>
   <h1>Ingeniería de Métodos</h1>
   <p>Flashcards, cuestionarios, progreso guardado y examen aleatorio</p>
-  <div id="jsok">Comprobando JS…</div>
 </header>
 
 <nav>
@@ -55,7 +55,7 @@
       <div class="flashcard" data-target="f1b"><p><strong>Producción</strong></p><p id="f1b" class="hidden">Cantidad de bienes/servicios generados en un periodo.</p></div>
       <div class="flashcard" data-target="f1c"><p><strong>Eficiencia</strong></p><p id="f1c" class="hidden">Producción real / producción estándar esperada.</p></div>
       <div class="flashcard" data-target="f1d"><p><strong>Factores que afectan</strong></p><p id="f1d" class="hidden">Métodos y equipo; utilización de capacidad; niveles de desempeño; factor humano.</p></div>
-      <div class="flashcard" data-target="f1e"><p><strong>Métodos y equipo</strong></p><p id="f1e" class="hidden">Automatizar, reducir manejo/esperas, buen mantenimiento, capacitación, motivación.</p></div>
+      <div class="flashcard" data-target="f1e"><p><strong>Métodos y equipo</strong></p><p id="f1e" class="hidden">Automatizar, reducir manejo/esperas, mantenimiento, capacitación, motivación.</p></div>
       <div class="flashcard" data-target="f1f"><p><strong>Utilización de la capacidad</strong></p><p id="f1f" class="hidden">Operar 2–3 turnos; existencias necesarias; estantes/tarimas; condiciones adecuadas.</p></div>
       <div class="flashcard" data-target="f1g"><p><strong>Niveles de desempeño</strong></p><p id="f1g" class="hidden">Trabajo en equipo, cultura, incentivos y formación.</p></div>
       <div class="flashcard" data-target="f1h"><p><strong>Productividad en el trabajo</strong></p><p id="f1h" class="hidden">Productividad parcial ligada al factor trabajo.</p></div>
@@ -175,82 +175,5 @@
     <p id="summaryText">Has completado 0% del curso 🎉</p>
   </div>
 </main>
-
-<script>
-  // ===== Señal visual para ti =====
-  document.getElementById('jsok').textContent = 'JS OK ✅';
-
-  // ===== Estado / progreso =====
-  let totalQuestions=12, correctAnswers=0, flashcardsSeen=new Set(), totalFlashcards=30;
-
-  // Cargar progreso
-  (function(){
-    try{
-      const saved=JSON.parse(localStorage.getItem('progresoMetodos'));
-      if(saved){ correctAnswers=saved.correctAnswers||0; flashcardsSeen=new Set(saved.flashcardsSeen||[]); }
-    }catch(e){}
-    updateProgress(); updateStats(); updateSummary();
-  })();
-
-  // Guardar
-  function saveProgress(){
-    try{ localStorage.setItem('progresoMetodos', JSON.stringify({correctAnswers,flashcardsSeen:[...flashcardsSeen]})); }catch(e){}
-  }
-
-  // Flashcards
-  document.querySelectorAll('.flashcard').forEach(card=>{
-    card.addEventListener('click', ()=>{
-      const id=card.getAttribute('data-target');
-      const ans=document.getElementById(id);
-      if(!ans) return;
-      ans.classList.toggle('hidden');
-      if(!flashcardsSeen.has(id)){ flashcardsSeen.add(id); updateStats(); updateSummary(); saveProgress(); }
-    });
-  });
-
-  // Verificar respuestas
-  document.querySelectorAll('.question').forEach(box=>{
-    const btn=box.querySelector('.btn-verify'); if(!btn) return;
-    btn.addEventListener('click', ()=>{
-      const qid=box.getAttribute('data-qid');
-      const correct=box.getAttribute('data-ans');
-      const sel=box.querySelector(input[name="${qid}"]:checked);
-      if(!sel){ alert('Elige una opción'); return; }
-      if(sel.value===correct){
-        alert('✅ Correcto');
-        const key='answered_'+qid;
-        if(!localStorage.getItem(key)){ correctAnswers++; localStorage.setItem(key,'1'); updateProgress(); updateSummary(); saveProgress(); }
-      }else{ alert('❌ Incorrecto, intenta otra vez'); }
-    });
-  });
-
-  // Progreso UI
-  function updateProgress(){ const pct=Math.round((correctAnswers/totalQuestions)*100); const bar=document.getElementById('progress-bar'); bar.style.width=pct+'%'; bar.textContent=pct+'%'; }
-  function updateStats(){ document.getElementById('flashStats').textContent=Flashcards vistas: ${flashcardsSeen.size}/${totalFlashcards}; }
-  function updateSummary(){ const total=totalQuestions+totalFlashcards, done=correctAnswers+flashcardsSeen.size, pct=Math.round((done/total)*100); const p=document.getElementById('summary'); p.style.display='block'; document.getElementById('summaryText').textContent=Has completado ${pct}% del curso 🎉; }
-
-  // ===== Examen aleatorio =====
-  const baseQuestions=[
-    {q:"¿Qué mide la productividad?",opts:["La cantidad de productos","El uso eficiente de los recursos","Solo la calidad"],ans:"El uso eficiente de los recursos"},
-    {q:"Ejemplo de 'métodos y equipo' que mejora productividad:",opts:["Automatización de procesos","Reducir número de empleados","Aumentar horas extras"],ans:"Automatización de procesos"},
-    {q:"La productividad marginal refleja:",opts:["Producción adicional por incremento de insumo","Promedio de producción mensual","Suma de factores productivos"],ans:"Producción adicional por incremento de insumo"},
-    {q:"El estudio de tiempos se centra en:",opts:["Diseñar la planta","Determinar el tiempo estándar","Motivar al personal"],ans:"Determinar el tiempo estándar"},
-    {q:"¿Cuántos pasos tiene el enfoque básico del estudio de métodos?",opts:["6","8","10"],ans:"8"},
-    {q:"Un principio de economía de movimientos es:",opts:["Usar ambas manos simultáneamente","Hacer movimientos bruscos","Aumentar repeticiones innecesarias"],ans:"Usar ambas manos simultáneamente"},
-    {q:"¿Qué simboliza una operación en el diagrama sinóptico?",opts:["Verificar calidad","Fase donde el producto se modifica","Esperar producto"],ans:"Fase donde el producto se modifica"},
-    {q:"¿Qué se coloca a la izquierda del símbolo?",opts:["Descripción","Valores de tiempo","Nombre del analista"],ans:"Valores de tiempo"},
-    {q:"Un enfoque del cursograma sinóptico es:",opts:["Propósito de la operación","Salario de trabajadores","Ventas mensuales"],ans:"Propósito de la operación"}
-  ];
-  let examList=[], examIndex=0, examScore=0, examTimer=null, examTime=300;
-  const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
-
-  document.getElementById('btnStartExam').addEventListener('click', startExam);
-
-  function startExam(){ examIndex=0; examScore=0; examTime=300; document.getElementById('examResult').innerHTML=''; examList=shuffle([...baseQuestions]).map(q=>({q:q.q,opts:shuffle([...q.opts]),ans:q.ans})); showExamQuestion(); if(examTimer) clearInterval(examTimer); examTimer=setInterval(tick,1000); }
-  function tick(){ if(examTime<=0){finishExam();return;} const m=Math.floor(examTime/60), s=examTime%60; document.getElementById('timer').textContent=Tiempo restante: ${m}:${s<10?'0'+s:s}; examTime--; }
-  function showExamQuestion(){ const box=document.getElementById('examContent'); if(examIndex>=examList.length){finishExam();return;} const q=examList[examIndex]; let html=<p><strong>${examIndex+1}. ${q.q}</strong></p>; q.opts.forEach(o=>{html+=<label><input type="radio" name="examOpt" value="${o}"> ${o}</label><br>}); html+=<button id="btnSubmitExam">Responder</button>; box.innerHTML=html; document.getElementById('btnSubmitExam').addEventListener('click', submitExam); }
-  function submitExam(){ const sel=document.querySelector('input[name="examOpt"]:checked'); if(!sel){alert('Elige una opción');return;} if(sel.value===examList[examIndex].ans) examScore++; examIndex++; showExamQuestion(); }
-  function finishExam(){ if(examTimer){clearInterval(examTimer); examTimer=null;} document.getElementById('examContent').innerHTML=''; const pct=Math.round((examScore/examList.length)*100); const msg=pct>=70?'🎉 Aprobaste':'❌ No aprobaste'; document.getElementById('examResult').innerHTML=<h3>Resultado: ${pct}%</h3><p>${msg}</p>; }
-</script>
 </body>
 </html>
