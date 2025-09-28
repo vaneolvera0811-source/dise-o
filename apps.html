@@ -98,13 +98,21 @@ const baseQuestions = [
   {q:"La productividad marginal refleja:",opts:["Producción adicional por incremento de insumo","Promedio de producción mensual","Suma de factores productivos"],ans:"Producción adicional por incremento de insumo"},
   {q:"El estudio de tiempos se centra en:",opts:["Diseñar la planta","Determinar el tiempo estándar","Motivar al personal"],ans:"Determinar el tiempo estándar"},
   {q:"¿Cuántos pasos tiene el enfoque básico del estudio de métodos?",opts:["6","8","10"],ans:"8"},
-  {q:"Un principio de economía de movimientos es:",opts:["Usar ambas manos simultáneamente","Hacer movimientos bruscos","Aumentar repeticiones innecesarias"],ans:"Usar ambas manos simultáneamente"},
+  {q:"Un principio de economía de movimientos es:",opts:["Usar ambas manos simultáneamente","Hacer cambios bruscos","Aumentar repeticiones innecesarias"],ans:"Usar ambas manos simultáneamente"},
   {q:"¿Qué simboliza una operación en el diagrama sinóptico?",opts:["Verificar calidad","Fase donde el producto se modifica","Esperar producto"],ans:"Fase donde el producto se modifica"},
   {q:"¿Qué se coloca a la izquierda del símbolo?",opts:["Descripción","Valores de tiempo","Nombre del analista"],ans:"Valores de tiempo"},
   {q:"Un enfoque del cursograma sinóptico es:",opts:["Propósito de la operación","Salario de trabajadores","Ventas mensuales"],ans:"Propósito de la operación"}
 ];
+
 let examList=[], examIndex=0, examScore=0, examTimer=null, examTime=300;
-function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]] } return a; }
+
+function shuffle(a){
+  for(let i=a.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
 
 function startExam(){
   examIndex=0; examScore=0; examTime=300;
