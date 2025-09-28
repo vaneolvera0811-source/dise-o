@@ -4,11 +4,10 @@ let correctAnswers = 0;
 let flashcardsSeen = new Set();
 let totalFlashcards = 30;
 
-// Utilidad
 function $(sel, ctx=document){ return ctx.querySelector(sel); }
 function $all(sel, ctx=document){ return Array.from(ctx.querySelectorAll(sel)); }
 
-// Cargar progreso
+// Cargar progreso y enganchar eventos
 document.addEventListener('DOMContentLoaded', () => {
   try {
     const saved = JSON.parse(localStorage.getItem('progresoMetodos'));
@@ -21,7 +20,6 @@ document.addEventListener('DOMContentLoaded', () => {
   updateProgress(); updateStats(); updateSummary();
 });
 
-// Guardar
 function saveProgress(){
   try{
     localStorage.setItem('progresoMetodos', JSON.stringify({
@@ -31,7 +29,6 @@ function saveProgress(){
   }catch(e){}
 }
 
-// Conectar eventos SIN inline
 function attachHandlers(){
   // Flashcards
   $all('.flashcard').forEach(card=>{
@@ -47,24 +44,24 @@ function attachHandlers(){
     });
   });
 
-  // Botones verificar
+  // Verificar respuestas
   $all('.question').forEach(box=>{
     const btn = box.querySelector('.btn-verify');
-    if(!btn) return;
+    if (!btn) return;
     btn.addEventListener('click', ()=>{
       const qid = box.getAttribute('data-qid');
       const correct = box.getAttribute('data-ans');
       const sel = $(input[name="${qid}"]:checked, box);
-      if(!sel){ alert('Elige una opción'); return; }
-      if(sel.value === correct){
+      if (!sel){ alert('Elige una opción'); return; }
+      if (sel.value === correct){
         alert('✅ Correcto');
         const key = 'answered_'+qid;
-        if(!localStorage.getItem(key)){
+        if (!localStorage.getItem(key)){
           correctAnswers++;
-          localStorage.setItem(key, '1');
+          localStorage.setItem(key,'1');
           updateProgress(); updateSummary(); saveProgress();
         }
-      }else{
+      } else {
         alert('❌ Incorrecto, intenta otra vez');
       }
     });
@@ -75,27 +72,26 @@ function attachHandlers(){
   if (btnStart) btnStart.addEventListener('click', startExam);
 }
 
-// UI progreso
 function updateProgress(){
   const pct = Math.round((correctAnswers/totalQuestions)*100);
-  const bar = document.getElementById('progress-bar');
-  if(bar){ bar.style.width = pct+'%'; bar.textContent = pct+'%'; }
+  const bar = $('#progress-bar');
+  if (bar){ bar.style.width = pct+'%'; bar.textContent = pct+'%'; }
 }
 function updateStats(){
-  const el = document.getElementById('flashStats');
-  if(el){ el.textContent = Flashcards vistas: ${flashcardsSeen.size}/${totalFlashcards}; }
+  const el = $('#flashStats');
+  if (el) el.textContent = Flashcards vistas: ${flashcardsSeen.size}/${totalFlashcards};
 }
 function updateSummary(){
-  const totalTasks = totalQuestions + totalFlashcards;
+  const total = totalQuestions + totalFlashcards;
   const done = correctAnswers + flashcardsSeen.size;
-  const pct = Math.round((done/totalTasks)*100);
-  const panel = document.getElementById('summary');
-  if(panel){ panel.style.display = 'block'; }
-  const txt = document.getElementById('summaryText');
-  if(txt){ txt.textContent = Has completado ${pct}% del curso 🎉; }
+  const pct = Math.round((done/total)*100);
+  const panel = $('#summary');
+  if (panel) panel.style.display = 'block';
+  const txt = $('#summaryText');
+  if (txt) txt.textContent = Has completado ${pct}% del curso 🎉;
 }
 
-// ===== Examen aleatorio =====
+// ===== EXAMEN ALEATORIO =====
 const baseQuestions = [
   {q:"¿Qué mide la productividad?",opts:["La cantidad de productos","El uso eficiente de los recursos","Solo la calidad"],ans:"El uso eficiente de los recursos"},
   {q:"Ejemplo de 'métodos y equipo' que mejora productividad:",opts:["Automatización de procesos","Reducir número de empleados","Aumentar horas extras"],ans:"Automatización de procesos"},
@@ -107,28 +103,26 @@ const baseQuestions = [
   {q:"¿Qué se coloca a la izquierda del símbolo?",opts:["Descripción","Valores de tiempo","Nombre del analista"],ans:"Valores de tiempo"},
   {q:"Un enfoque del cursograma sinóptico es:",opts:["Propósito de la operación","Salario de trabajadores","Ventas mensuales"],ans:"Propósito de la operación"}
 ];
-
 let examList=[], examIndex=0, examScore=0, examTimer=null, examTime=300;
-
 function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]] } return a; }
 
 function startExam(){
   examIndex=0; examScore=0; examTime=300;
-  $('#examResult').innerHTML = '';
+  $('#examResult').innerHTML='';
   examList = shuffle([...baseQuestions]).map(q=>({q:q.q, opts: shuffle([...q.opts]), ans:q.ans}));
   showExamQuestion();
-  if(examTimer) clearInterval(examTimer);
-  examTimer = setInterval(tick, 1000);
+  if (examTimer) clearInterval(examTimer);
+  examTimer = setInterval(tick,1000);
 }
 function tick(){
-  if(examTime<=0){ finishExam(); return; }
+  if (examTime<=0){ finishExam(); return; }
   const m=Math.floor(examTime/60), s=examTime%60;
   $('#timer').textContent = Tiempo restante: ${m}:${s<10?'0'+s:s};
   examTime--;
 }
 function showExamQuestion(){
   const box = $('#examContent');
-  if(examIndex>=examList.length){ finishExam(); return; }
+  if (examIndex>=examList.length){ finishExam(); return; }
   const q = examList[examIndex];
   let html = <p><strong>${examIndex+1}. ${q.q}</strong></p>;
   q.opts.forEach(o => { html += <label><input type="radio" name="examOpt" value="${o}"> ${o}</label><br>; });
@@ -137,13 +131,13 @@ function showExamQuestion(){
   $('#btnSubmitExam').addEventListener('click', submitExam);
 }
 function submitExam(){
-  const sel = $('input[name="examOpt"]:checked');
-  if(!sel){ alert('Elige una opción'); return; }
-  if(sel.value===examList[examIndex].ans) examScore++;
+  const sel = document.querySelector('input[name="examOpt"]:checked');
+  if (!sel){ alert('Elige una opción'); return; }
+  if (sel.value === examList[examIndex].ans) examScore++;
   examIndex++; showExamQuestion();
 }
 function finishExam(){
-  if(examTimer){ clearInterval(examTimer); examTimer=null; }
+  if (examTimer){ clearInterval(examTimer); examTimer=null; }
   $('#examContent').innerHTML = '';
   const pct = Math.round((examScore/examList.length)*100);
   const msg = pct>=70 ? '🎉 Aprobaste' : '❌ No aprobaste';
